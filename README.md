@@ -2,7 +2,7 @@
 
 Source code to reproduce experiments from 
 
-S. Zeng, F. Graf and R. Kwitt
+S. Zeng, F. Graf and R. Kwitt      
 **Latent SDEs on Homogeneous Spaces**      
 *NeurIPS 2023*
 
