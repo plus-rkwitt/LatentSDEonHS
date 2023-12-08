@@ -112,12 +112,11 @@ python rotating_mnist.py \
     --n-filters 8
 ```
 
-Below are the results of **two** runs with different random seeds:
+Below are the results of **10** runs with different random seeds:
 
-| Run  | MSE (on left-out image) $\times 10^{-3}$ |
-|---|---|
-| `1` | `11.05` | 
-| `2` | `11.25` | 
+|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |
+| -------------------- | ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| MSE $\times 10^{-3}$ | 11.53 ± 0.38| 12.03 | 11.47 | 11.04 | 12.02 | 11.80 | 11.45 | 11.74 | 11.57 | 10.89 | 11.34 |
 
 In [**Zeng23a**], we report an MSE of `11.8 +/- 0.25`.
 
@@ -153,12 +152,11 @@ python pendulum_regression.py \
     --use-atanh
 ```
 
-Below are the results of **two** runs with different random seeds:
+Below are the results of **8** runs with different random seeds:
 
-| Run  | MSE $\times 10^{-3}$ |
-|---|---|
-| `1` | `4.13` | 
-| `2` | `3.81` | 
+|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+| ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| MSE $\times 10^{-3}$ | 3.91 ± 0.36 |  3.58 | 3.47  | 3.76  | 4.32  | 4.35  | 4.16  | 4.07  | 3.57  |
 
 In [**Zeng23a**], we report an average MSE of `4.23 +/- 0.5`.
 
@@ -193,12 +191,11 @@ python pendulum_interpolation.py \
     --use-atanh
 ```
 
-Below are the results of **two** runs with different random seeds:]
+Below are the results of **10** runs with different random seeds:
 
-| Run  | MSE $\times 10^{-3}$ |
-|---|---|
-| `1` | `8.06` | 
-| `2` | `8.26` | 
+|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |
+| ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
+| MSE $\times 10^{-3}$ | 8.15 ± 0.06 | 8.13  | 8.09  | 8.16  | 8.06  | 8.18  | 8.14  | 8.20  | 8.13  | 8.17  | 8.11  |
 
 In [**Zeng23a**], we report an MSE of `8.02 +/- 0.10`.
 
@@ -239,12 +236,14 @@ python activity_classification.py \
     --use-atanh
 ```
 
-Below are the results of **two** runs with different random seeds:
 
-| Run  | Test Accuracy (\%) |
-|---|---|
-| 1 | `90.92` | 
-| 2 | `90.70` | 
+Below are the results of **8** runs with different random seeds:
+
+|      Run     |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+| -------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+|    Acc [%]   | 90.58 ± 0.48| 90.03 | 90.82 | 90.64 | 90.78 | 90.22 | 89.91 | 91.12 | 91.14 |
+
+
 
 In [**Zeng23a**], we report an accuracy of `90.7 +/- 0.3`.
 
@@ -285,13 +284,11 @@ python physionet_interpolation.py \
     --sample-tp 0.5 \
     --quantization 0.1
 ```
-Below are the results of **two** runs with different random seeds at `--sample-tp 0.5` which means that 50\% of timepoints
-where there are actual measurements are taken as model input:
+Below are the results of **8** runs with different random seeds at `--sample-tp 0.5` which means that 50\% of timepoints at which there are actual measurements are taken as model input:
 
-| Run  | MSE (on remaining measurements) $\times 10^{-3}$ |
-|---|---|
-| 1 | `3.19` | 
-| 2 | `3.12` | 
+|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+| ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| MSE $\times 10^{-3}$ | 3.13 ± 0.04 | 3.15  | 3.15  | 3.17  | 3.14  | 3.12  | 3.06  | 3.18  | 3.07  |
 
 At that sampling rate and quantization (6 minutes equals `--quantization 0.1`), we report `3.25 +/- 0.02` in [**Zeng23a**].
 
