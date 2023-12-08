@@ -190,7 +190,6 @@ python pendulum_interpolation.py \
     --mc-eval-samples 1 \
     --mc-train-samples 1 \
     --loglevel debug \
-    \
     --use-atanh
 ```
 
@@ -239,9 +238,6 @@ python activity_classification.py \
     --aux-hidden-dim 32 \
     --use-atanh
 ```
-
-
-python activity_classification.py --data-dir data_dir --enable-file-logging --log-dir logs/ --seed 3456 --device cuda:0 --use-atanh --h-dim 128 --freeze-sigma
 
 Below are the results of **two** runs with different random seeds:
 
