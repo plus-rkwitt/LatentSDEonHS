@@ -97,7 +97,9 @@ def main():
     desired_t = torch.linspace(0, 0.99, provider.num_timepoints, device=args.device)
 
     recog_net = PendulumRecogNetwork(
-        h_dim=args.h_dim, mtan_input_dim=args.h_dim
+        h_dim=args.h_dim,
+        mtan_input_dim=args.h_dim,
+        use_atanh=args.use_atanh
     )
     recon_net = PendulumReconNetwork(z_dim=args.z_dim)
     pxz_net = PathToGaussianDecoder(mu_map=recon_net, sigma_map=None) 

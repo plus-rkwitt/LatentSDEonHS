@@ -149,7 +149,8 @@ def main():
 
     recog_net = PendulumRecogNetwork(
         h_dim=args.h_dim, 
-        mtan_input_dim=args.h_dim)
+        mtan_input_dim=args.h_dim,
+        use_atanh=args.use_atanh)
     recon_net = PendulumReconNetwork(z_dim=args.z_dim)
     pxz_net = PathToGaussianDecoder(
         mu_map=recon_net, 
@@ -197,7 +198,6 @@ def main():
         "oth": ["lr"],
     }
     pm = ProgressMessage(stats_mask)
-    args_dict = vars(args)
 
     best_epoch_val_aux = np.inf
     best_epoch_tst_aux = np.inf
