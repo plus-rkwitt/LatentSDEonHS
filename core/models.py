@@ -1,4 +1,9 @@
-"""Implementation of model parts used throughout all experiments."""
+"""Implementation of model parts used throughout all experiments in 
+
+    Zeng S., Graf F. and Kwitt, R.
+    Latent SDEs on Homogeneous Spaces
+    NeurIPS 2023
+"""
 
 import math
 import numpy as np
@@ -27,13 +32,15 @@ from utils.misc import scatter_obs_and_msk
 
 
 class MultiTimeAttention(nn.Module):
-    """source: https://github.com/reml-lab/mTAN/blob/main/src/models.py (modified)
-
+    """(Slightly adjusted) multi-time attention (mTAN) implementation from 
+     
+       https://github.com/reml-lab/mTAN/blob/main/src/models.py 
+       
     Args:
-        input_dim (int): _description_
-        nhidden (int, optional): _description_. Defaults to "16".
-        embed_time (int, optional): _description_. Defaults to "16".
-        num_heads (int, optional): _description_. Defaults to "1".
+        input_dim (int): Dimensionality of input observations x_t
+        nhidden (int, optional): Output dimenesion of attention module. Defaults to 16.
+        embed_time (int, optional): Dimension for time embedding. Defaults to 16.
+        num_heads (int, optional): Number of attention heads. Defaults to 1.
     """
 
     def __init__(
@@ -72,14 +79,16 @@ class MultiTimeAttention(nn.Module):
         mask: Optional[Tensor] = None,
         dropout: Optional[nn.Dropout] = None,
     ) -> Tuple[Tensor, Tensor]:
-        """Compute 'Scaled Dot Product Attention'
+        """Computes 'Scaled Dot Product Attention'
 
         Args:
-            query (Tensor): _description_
-            key (Tensor): _description_
-            value (Tensor): _description_
-            mask (Tensor, optional): _description_. Defaults to None.
-            dropout (nn.Dropout, optional): _description_. Defaults to None.
+            query (Tensor): Query tensors.
+            key (Tensor): Key tensors.
+            value (Tensor): Value tensors.
+            mask (Tensor, optional): Tensor to mask-out elements 
+                during attention computation. Defaults to None.
+            dropout (nn.Module, optional): Optional nn.Module implementing 
+                some sort of dropout operation. Defaults to None.
 
         Returns:
             (Tuple[Tensor, Tensor]): _description_
@@ -130,16 +139,20 @@ class MultiTimeAttention(nn.Module):
 
 
 class EncMtanRnn(nn.Module):
-    """source: https://github.com/reml-lab/mTAN/blob/main/src/models.py (modified, to allow setting the device with .to(device) )
+    """enc_mtan_rnn implementation from 
+    
+        https://github.com/reml-lab/mTAN/blob/main/src/models.py 
+        
+    (modified, to allow setting the device with .to(device))
 
     Args:
         input_dim (int): _description_
         query (Tensor): _description_
-        latent_dim (int, optional): _description_. Defaults to "2".
-        nhidden (int, optional): _description_. Defaults to "16".
-        embed_time (int, optional): _description_. Defaults to "16".
-        num_heads (int, optional): _description_. Defaults to "1".
-        learn_emb (bool, optional): _description_. Defaults to "False".
+        latent_dim (int, optional): _description_. Defaults to 2.
+        nhidden (int, optional): _description_. Defaults to 16.
+        embed_time (int, optional): _description_. Defaults to 16.
+        num_heads (int, optional): _description_. Defaults to 1.
+        learn_emb (bool, optional): _description_. Defaults to False.
     """
 
     def __init__(
@@ -178,7 +191,7 @@ class EncMtanRnn(nn.Module):
         )
 
     def learn_time_embedding(self, tt: Tensor) -> Tensor:
-        """_summary_
+        """Implements a learned time embedding.
 
         Args:
             tt (Tensor): _description_
@@ -192,7 +205,7 @@ class EncMtanRnn(nn.Module):
         return torch.cat([out1, out2], -1)
 
     def fixed_time_embedding(self, pos: Tensor) -> Tensor:
-        """_summary_
+        """Implements a fixed time embedding.
 
         Args:
             pos (Tensor): _description_
@@ -209,7 +222,7 @@ class EncMtanRnn(nn.Module):
         return pe
 
     def forward(self, x: Tensor, time_steps: Tensor) -> Tensor:
-        """_summary_
+        """Forward pass through mTAN
 
         Args:
             x (Tensor): _description_
@@ -234,16 +247,19 @@ class EncMtanRnn(nn.Module):
 
 
 class MTANEncoder(EncMtanRnn):
-    """_summary_
+    """mTAN encoder used in all experiments where observations 
+    are (1) vector-valued (fed directly to the encoder), or (2) 
+    image-valued and vectorized by some CNN (i.e., a representation
+    of each image-valued observation is fed to the encoder).
 
     Args:
         input_dim (int): _description_
         query (Tensor): _description_
-        latent_dim (int, optional): _description_. Defaults to "2".
-        nhidden (int, optional): _description_. Defaults to "16".
-        embed_time (int, optional): _description_. Defaults to "16".
-        num_heads (int, optional): _description_. Defaults to "1".
-        learn_emb (bool, optional): _description_. Defaults to "False".
+        latent_dim (int, optional): _description_. Defaults to 2.
+        nhidden (int, optional): _description_. Defaults to 16.
+        embed_time (int, optional): _description_. Defaults to 16.
+        num_heads (int, optional): _description_. Defaults to 1.
+        learn_emb (bool, optional): _description_. Defaults to False.
     """
 
     def __init__(
@@ -284,7 +300,7 @@ class MTANEncoder(EncMtanRnn):
         )
 
     def forward(self, x: Tensor, time_steps: Tensor) -> Tensor:
-        """_summary_
+        """Forward pass through the model.
 
         Args:
             x (Tensor): _description_
@@ -315,9 +331,9 @@ class Chebyshev(nn.Module):
         degree (int): Degree of the individual polynomial
         out_dim (int): Number of channels of the output
         time_min (float, optional): The integer which defines the left function domain bound.
-                                    Defaults to "0".
+                                    Defaults to 0.0.
         time_max (float, optional): The integer which defines the right function domain bound.
-                                    Defaults to "8".
+                                    Defaults to 1.0.
     """
 
     def __init__(
@@ -354,7 +370,6 @@ class Chebyshev(nn.Module):
         Returns:
             (float): time, greater than "-1" and smaller than "1"
         """
-        # TODO: Should possibly be done as interval_transform = lambda t : (2*t - (self.time_min + self.time_max)) / (self.time_max - self.time_min)
         return (t - self.time_min) / (self.time_max - self.time_min)
 
     def forward(self, out_encoder: Tensor, time_steps: Tensor) -> Tensor:
@@ -377,39 +392,11 @@ class Chebyshev(nn.Module):
         return polynomial
 
 
-class UnFlatten(nn.Module):
-    """UnFlatten is a class to flatten a tensor dimension, expanding it to a desired shape.
-
-    Args:
-        w (int): _description_
-    """
-
-    def __init__(self, w: int) -> None:
-        super().__init__()
-        self.w = w
-
-    def __repr__(self) -> str:
-        return f"UnFlatten(w={self.w})"
-
-    def forward(self, inp: Tensor) -> Tensor:
-        r"""
-        Args:
-            inp (Tensor): input tensor of shape "(N: batchsize, L: \# of time steps,
-                            d: \# of channels)"
-
-        Returns:
-            (Tensor): tensor of shape "(N: batchsize, TODO,
-                             d1: w, d2: w)"
-        """
-        nc = inp[0].numel() // (self.w**2)  # TODO: what's nc?
-        return inp.view(inp.size(0), nc, self.w, self.w)
-
-
 class RotatingMNISTRecogNetwork(nn.Module):
     """_summary_
 
     Args:
-        n_filters (int, optional): _description. Defaults to "8".
+        n_filters (int, optional): _description. Defaults to 8.
     """
 
     def __init__(self, n_filters: int = 8) -> None:
@@ -463,8 +450,10 @@ class RotatingMNISTReconNetwork(nn.Module):
     """_summary_
 
     Args:
-        z_dim (int): _description_
-        n_filters (int, optional): _description_. Defaults to "16".
+        z_dim (int): Dimensionality of latent space.
+        n_filters (int, optional): Number of filters to use 
+            for transposed convolution (doubles each layer). 
+            Defaults to 16.
     """
 
     def __init__(self, z_dim: int, n_filters: int = 16) -> None:
@@ -473,7 +462,7 @@ class RotatingMNISTReconNetwork(nn.Module):
         self.n_filters = n_filters
         self.map = nn.Sequential(
             nn.Linear(z_dim, 3 * 3 * 8),
-            UnFlatten(3),
+            nn.Unflatten(1, [8, 3, 3]),
             nn.ConvTranspose2d(
                 8, n_filters * 8, kernel_size=3, stride=2, padding=(0, 0)
             ),
@@ -507,26 +496,40 @@ class RotatingMNISTReconNetwork(nn.Module):
         )
 
     def forward(self, x: Tensor) -> Tensor:
-        """_summary_
+        """Forward pass through model.
 
         Args:
-            x (Tensor): _description_
+            x (Tensor): Expects a tensor of shape 
+                (num_samples*batch_size*time_steps, z_dim)
 
         Returns:
-            (Tensor): _description_
+            (Tensor): Reconstructions of the form 
+                (num_samples*batch_size*time_steps, 1, 28, 28)
         """
         return self.map(x)
 
 
 class SOnPathDistributionEncoder(nn.Module):
-    """_summary_
+    """Implements the parametrization of the approximate posterior path
+    distribution in SO(n).
 
     Args:
-        loc_map (nn.Module): _description_
-        scl_map (nn.Module): _description_
-        time_fn (nn.Module): _description_
-        learnable_prior (bool, optional): Defaults to False.
-        in_dim (int, optional): Defaults to "32".
+        loc_map (nn.Module): Module mapping to the location parameter
+            of the power spherical distribution of initial SDE states.
+        scl_map (nn.Module): Module mapping to the concentration/scale 
+            parameter of the power spherical distribution of initial 
+            SDE states.
+        time_fn (nn.Module): Module mapping representations and given 
+            time points {t_1,...,t_T} to corresponding K_t's (i.e., 
+            the drift in the Lie algebra so(n), see paper).
+        learnable_prior (bool, optional): If set to True, the prior 
+            path distribution is learned. In particular, this is  
+            implemented by updating an nn.Parameter that encodes a 
+            representation passed through the time function (time_fn).
+            Defaults to False.
+        in_dim (int, optional): Dimension of the input dimension expected 
+            by the time function (time_fn); only used if learnable_prior=True. 
+            Defaults to 32.
     """
 
     def __init__(
@@ -550,16 +553,20 @@ class SOnPathDistributionEncoder(nn.Module):
     def extra_repr(self) -> str:
         return f"learnable prior={self._learnable_prior}"
         
-
     def forward(self, h: Tensor, t: Tensor) -> Tuple[PathDistribution, PathDistribution]:
-        """_summary_
+        """Forward pass through the model.
 
         Args:
-            h (Tensor): _description_
-            t (Tensor): _description_
+            h (Tensor): Representation of input observations, e.g., provided
+                by some recogntion network. Expects a tensor of shape 
+                (batch_size, h_dim)
+            t (Tensor): Tensor of time points at which we want to evaluate 
+                paths drawn from the prior and approximate posterior path 
+                distributions.
 
         Returns:
-            (Tuple[PathDistribution, PathDistribution]): _description_
+            (Tuple[PathDistribution, PathDistribution]): Approximate posterior 
+                and prior path distribution objects.
         """
         loc = self._loc_map(h)
         scl = self._scl_map(h)        
@@ -584,8 +591,8 @@ class PendulumRecogNetwork(nn.Module):
     """_summary_
 
     Args:
-        h_dim (int, optional): _description_. Defaults to "32".
-        mtan_input_dim (int, optional): _description Defaults to "32".
+        h_dim (int, optional): _description_. Defaults to 32.
+        mtan_input_dim (int, optional): _description Defaults to 32.
     """
 
     def __init__(
@@ -681,7 +688,7 @@ class PendulumReconNetwork(nn.Module):
     """_summary_
 
     Args:
-        z_dim (int, optional): _description_. Defaults to "16".
+        z_dim (int, optional): _description_. Defaults to 16.
     """
 
     def __init__(self, z_dim: int = 16) -> None:
@@ -728,8 +735,8 @@ class PathToGaussianDecoder(nn.Module):
 
     Args:
         mu_map (nn.Module): _description_
-        sigma_map (nn.Module, optional): _description_. Defaults to "None".
-        initial_sigma (float, optional): _description_. Defaults to "1".
+        sigma_map (nn.Module, optional): _description_. Defaults to None.
+        initial_sigma (float, optional): _description_. Defaults to 1.
     """
 
     def __init__(self, 
@@ -964,8 +971,8 @@ class PathToSinCosDecoder(nn.Module):
     """_summary_
 
     Args:
-        z_dim (int, optional): _description_. Defaults to "8".
-        aux_hidden_dim (int, optional): _description_. Defaults to "32".
+        z_dim (int, optional): _description_. Defaults to 8.
+        aux_hidden_dim (int, optional): _description_. Defaults to 32.
     """
 
     def __init__(self, z_dim: int = 8, aux_hidden_dim: int = 32) -> None:
@@ -1091,18 +1098,29 @@ def default_SOnPathDistributionEncoder(
     time_min: float = 0.0,
     time_max: float = 1.0,
 ) -> SOnPathDistributionEncoder:
-    """_summary_
+    """Implements the default SOnPathDistributionEncoder encoder we use 
+    throughout all experiments, where the time function is parametrized 
+    via Chebyshev polynomials and the modules that map representations to 
+    the location and concentration parameter of the power spherical 
+    distribution are affine maps (i.e., nn.Linear).
 
     Args:
-        h_dim (int): _description_
-        z_dim (int): _description_
-        n_deg (int): _description_
-        learnable_prior (bool, optional): _description_. Defaults to "False".
-        time_min (float, optional): _description_. Defaults to "0.0".
-        time_max (float, optional): _description_. Defaults to "1.0".
+        h_dim (int): Dimension of the representations from which the 
+            PathDistribution objects are produced.
+        z_dim (int): Desired dimensionality of the latent space.
+        n_deg (int): Max. degree of Chebyshev polynomials used to 
+            parametrize the time function.
+        learnable_prior (bool, optional): If set to True, a learnable 
+            prior path distribution is used. Defaults to False.
+        time_min (float, optional): Left side of the interval 
+            [time_min, time_max] on which the Chebyshev polynomials are 
+            defined. Defaults to 0.0.
+        time_max (float, optional): Right side of the interval 
+            [time_min, time_max] on which the Chebyshev polynomials are 
+            defined. Defaults to 1.0.
 
     Returns:
-        SOnPathDistributionEncoder: _description_
+        SOnPathDistributionEncoder: Parametrized SOnPathDistributionEncoder
     """
     group_dim = int(z_dim * (z_dim - 1) / 2)
 
@@ -1115,12 +1133,13 @@ def default_SOnPathDistributionEncoder(
 
 
 class ActivityRecogNetwork(nn.Module):
-    """_summary_
+    """Implementation of the recognition network used in the human 
+    activity recognition experiment.
 
         Args:
-            mtan_input_dim (int, optional): _description_. Defaults to "32".
-            mtan_hidden_dim (int, optional): _description_. Defaults to "32".
-            use_atanh (bool, optional): _description_. Defaults to "False".
+            mtan_input_dim (int, optional): _description_. Defaults to 32.
+            mtan_hidden_dim (int, optional): _description_. Defaults to 32.
+            use_atanh (bool, optional): _description_. Defaults to False.
     """
 
     def __init__(
@@ -1175,8 +1194,8 @@ class GenericMLP(nn.Module):
         Args:
             inp_dim (int): _description_
             out_dim (int): _description_
-            n_hidden (int, optional): _description_. Defaults to "32".
-            n_layers (int, optional): _description_. Defaults to "1".
+            n_hidden (int, optional): _description_. Defaults to 32.
+            n_layers (int, optional): _description_. Defaults to 1.
     """
 
     def __init__(
@@ -1191,8 +1210,8 @@ class GenericMLP(nn.Module):
         Args:
             inp_dim (int): _description_
             out_dim (int): _description_
-            n_hidden (int, optional): _description_. Defaults to "32".
-            n_layers (int, optional): _description_. Defaults to "1".
+            n_hidden (int, optional): _description_. Defaults to 32.
+            n_layers (int, optional): _description_. Defaults to 1.
         """
         super().__init__()
         self.inp_dim = inp_dim

@@ -1,11 +1,16 @@
-"""Dataset provider for the Pendulm regression and interpolation task.
+"""Dataset provider for the Pendulm regression and interpolation task from
 
-Data loading code is adapted (in parts) from
-    https://github.com/boschresearch/Continuous-Recurrent-Units
-    and
-    https://github.com/ALRhub/rkn_share
+    Zeng S., Graf F. and Kwitt, R.
+    Latent SDEs on Homogeneous Spaces
+    NeurIPS 2023
+
+    Data loading code is adapted (in parts) from
     
-Authors: Sebastian Zeng, Florian Graf, Roland Kwitt (2023)
+    https://github.com/boschresearch/Continuous-Recurrent-Units
+    
+    and
+    
+    https://github.com/ALRhub/rkn_share
 """
 
 import os
@@ -81,7 +86,8 @@ class PendulumBase(Dataset):
 
     def __len__(self):
         return self.obs.shape[0]
-            
+
+
 class PendulumDataset(PendulumBase):
     
     num_timepoints = 100
@@ -91,7 +97,7 @@ class PendulumDataset(PendulumBase):
         self._rewrite()  
         
     def _rewrite(self):
-        """rewrite dataset so that it can be input to mTAN"""
+        """Rewrites dataset so that it can be input to mTAN."""
 
         # rewrite time points
         tps_new = torch.zeros_like(self.tps)
@@ -149,6 +155,7 @@ class PendulumDataset(PendulumBase):
         else:
             return inp_and_evd
             
+
 class PendulumProvider(DatasetProvider):
     def __init__(self, data_dir: str=None, task:str=None):
         DatasetProvider.__init__(self)    
@@ -161,28 +168,28 @@ class PendulumProvider(DatasetProvider):
         self._ds_val = PendulumDataset(data_dir, task, 'valid')
     
     @property    
-    def num_timepoints(self):
+    def num_timepoints(self) -> int:
         return PendulumDataset.num_timepoints
     
     @property
-    def num_train_samples(self):
+    def num_train_samples(self) -> int:
         return len(self._ds_trn)
     
     @property 
-    def num_test_samples(self):
+    def num_test_samples(self) -> int:
         return len(self._ds_tst)
     
     @property
-    def num_val_samples(self):
+    def num_val_samples(self) -> int:
         return len(self._ds_val)
     
-    def get_train_loader(self, **kwargs):
+    def get_train_loader(self, **kwargs) -> DataLoader:
         return DataLoader(self._ds_trn, **kwargs)
     
-    def get_test_loader(self, **kwargs):
+    def get_test_loader(self, **kwargs) -> DataLoader:
         return DataLoader(self._ds_tst, **kwargs)
     
-    def get_val_loader(self, **kwargs):
+    def get_val_loader(self, **kwargs) -> DataLoader:
         return DataLoader(self._ds_val, **kwargs)
     
 
@@ -263,8 +270,13 @@ def subsample(data, sample_rate, imagepred=False, random_state=0):
             validation_time_points
 
 
-# taken from https://github.com/ALRhub/rkn_share/ and modified to generate an additional validation set
-def generate_pendulums(file_path, task, impute_rate=0.5):
+"""The following code is aken from 
+
+    https://github.com/ALRhub/rkn_share/ 
+
+    and modified to generate an additional validation set.
+"""
+def generate_pendulums(file_path: str, task: str, impute_rate: float = 0.5):
     
     if task == 'interpolation':
         pend_params = Pendulum.pendulum_default_params()

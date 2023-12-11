@@ -1,11 +1,19 @@
-"""Dataset provider for toy datasets (e.g., irregular sine)."""
+"""Dataset provider for irregular sine toy dataset (not in paper)
 
-import math
+    Zeng S., Graf F. and Kwitt, R.
+    Latent SDEs on Homogeneous Spaces
+    NeurIPS 2023
+
+    Note: This is an adjusted version of the irregular sine 
+    data from https://github.com/google-research/torchsde
+"""
+
 import numpy as np
 import torch
 from torch.utils.data import DataLoader, Dataset
 
 from .dataset_provider import DatasetProvider
+
 
 class IrregularSineDataset(Dataset):    
     
@@ -50,15 +58,17 @@ class IrregularSineProvider(DatasetProvider):
     def __init__(self, num_samples: int=1):
         DatasetProvider.__init__(self)    
         
-        # possibly support testing/validation data  
+        # possibly support testing/validation data later on
         self._ds_trn = IrregularSineDataset(num_samples=num_samples, mode='train')
         
     @property    
     def num_timepoints(self):
+        """Returns number of all possible timepoints in dataset."""
         return IrregularSineDataset.num_timepoints
     
     @property
     def num_train_samples(self):
+        """Returns number of training samples."""
         return len(self._ds_trn)
     
     def get_train_loader(self, **kwargs):

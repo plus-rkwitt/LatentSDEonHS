@@ -1,6 +1,8 @@
-"""Generic template for a dataset provider.
+"""Generic template for a dataset provider from
 
-Authors: Sebastian Zeng, Florian Graf, Roland Kwitt (2023)
+    Zeng S., Graf F. and Kwitt, R.
+    Latent SDEs on Homogeneous Spaces
+    NeurIPS 2023
 """
 
 class DatasetProvider():

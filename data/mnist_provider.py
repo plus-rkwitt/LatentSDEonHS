@@ -1,9 +1,11 @@
-"""Dataset provider for the RotatingMNIST interpolation task.
+"""Dataset provider for the RotatingMNIST interpolation task from 
 
-Data loading code is adapted from
-    https://github.com/cagatayyildiz/ODE2VAE
+    Zeng S., Graf F. and Kwitt, R.
+    Latent SDEs on Homogeneous Spaces
+    NeurIPS 2023
 
-Authors: Sebastian Zeng, Florian Graf, Roland Kwitt (2023)
+    Note: This is an adjusted version of the data loading code 
+    from https://github.com/cagatayyildiz/ODE2VAE
 """
 
 import os
@@ -30,22 +32,31 @@ class RotatingMNISTSDataset(Dataset):
         self.file_dir = os.path.join(self.data_dir, 'rot_mnist')
         self.url = 'https://drive.google.com/uc?id=1Ax5swK4YtilC8DCxSHXOngcEZ71bH7hw'
         if download:
-            self.download()
+            self._download()
 
-        self.load_mnist_nonuniform_data(self.file_dir)    
+        self._load_mnist_nonuniform_data(self.file_dir)    
     
-    def _check_exists(self):
-        if os.path.exists(os.path.join(self.file_dir, 'rot-mnist-3s.mat')):
-            return True
-        return False
-    
-    def download(self):
+    def _check_exists(self) -> bool:
+        """Checks if rot-mnist-3s.mat file exists.
+
+        Returns:
+            bool: True if exists, else False
+        """
+
+    def _download(self) -> None:
+        """Downloads rot-mnist-3s.mat file and establishes directory structure."""
         if self._check_exists():
             return
         os.makedirs(self.file_dir, exist_ok=True)
         gdown.download(self.url, os.path.join(self.file_dir, 'rot-mnist-3s.mat'), quiet=False)
         
-    def load_mnist_nonuniform_data(self, file_dir):
+    def _load_mnist_nonuniform_data(self, file_dir) -> None:
+        """Loads and prepares time series of rotating 3's according to
+
+        https://github.com/cagatayyildiz/ODE2VAE
+        
+        but splits data into training/validation/testing via scikit-learn.
+        """
         data = sio.loadmat(os.path.join(file_dir, 'rot-mnist-3s.mat'))
         Xtr = np.squeeze(data['X'])
         Xtr = np.flip(Xtr,1)
@@ -124,23 +135,23 @@ class RotatingMNISTProvider(DatasetProvider):
         return RotatingMNISTSDataset.num_timepoints
     
     @property 
-    def num_test_samples(self):
+    def num_test_samples(self) -> int:
         return len(self._ds_tst)
     
     @property 
-    def num_train_samples(self):
+    def num_train_samples(self) -> int:
         return len(self._ds_trn)
     
     @property 
-    def num_val_samples(self):
+    def num_val_samples(self) -> int:
         return len(self._ds_val)
     
-    def get_train_loader(self, **kwargs):
+    def get_train_loader(self, **kwargs)  -> DataLoader:
         return DataLoader(self._ds_trn, **kwargs)    
         
-    def get_test_loader(self, **kwargs):
+    def get_test_loader(self, **kwargs) -> DataLoader:
         return DataLoader(self._ds_tst, **kwargs)
     
-    def get_val_loader(self, **kwargs):
+    def get_val_loader(self, **kwargs) -> DataLoader:
         return DataLoader(self._ds_val, **kwargs)
 

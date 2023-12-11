@@ -38,7 +38,8 @@ paper as [**Zeng23a**].
 
 ### Example setup
 
-The following example (1) sets up Anaconda Python (2023.09) in `/tmp/anaconda3`, (2) creates and activates a virtual environment `pytorch211`, (3) installs PyTorch 2.1.1 (according to the [PyTorch](https://pytorch.org/) installation instructions as of Dec. 2023) and (4) installs all dependencies, i.e., `einops, scipy, scikit-learn` and `gdown`.
+The following example (1) sets up Anaconda Python (2023.09) in `/tmp/anaconda3`, (2) creates and activates a virtual environment `pytorch211`, (3) installs PyTorch 2.1.1 (according to the [PyTorch](https://pytorch.org/) installation instructions as of Dec. 2023) and (4) installs all dependencies, i.e., `einops, scipy, scikit-learn` and `gdown`. Assumes that the installed
+CUDA version is 12.1.
 
 ```bash
 cd /tmp/
@@ -52,8 +53,7 @@ conda install pytorch torchvision torchaudio pytorch-cuda=12.1 -c pytorch -c nvi
 pip3 install einops scipy scikit-learn gdown
 ```
 
-Next, clone the repository, get the implementation of the power spherical distribution and set it up 
-as listed:
+Next, (1) clone the repository as well as (2) the implementation of the power spherical distribution from De Cao and Aziz (see [here](https://arxiv.org/abs/2006.04437)) and set it up as listed:
 
 ```bash
 cd /tmp/
@@ -71,16 +71,16 @@ without any errors you are good to go.
 
 ### Test System
 
-This code has been mainly tested on an Ubuntu Linux 22.04 with an Nvidia GTX 3090 GPU, CUDA 12.1 (driver version 530.30.02 ) and PyTorch v2.1.1. We have also tested the code running PyTorch 1.13 on the same system (CUDA 11.8).
+This code has been mainly tested on an Ubuntu Linux 22.04 with an Nvidia GTX 3090 GPU, CUDA 12.1 (driver version 530.30.02 ) and PyTorch v2.1.1. We have also tested the code on a system running PyTorch 1.13 (CUDA 11.8).
 
 # Experiments
 
-The following sections lists the settings we used to run the 
+The following sections list the settings we used to run the 
 experiments from the manuscript. In the configurations listed
 below, experiments are run on the first GPU in your system 
 (`cuda:0`).
 
-The `logs` directory will hold (if `--enable-file-logging` is set and a valid directory is provided with `--log-dir`) **two** files per experiment, tracking (experiment-specific) performance measures, i.e., a JSON  (`.json`) file as well as an exact replica of the console output (the `.txt` file). Each file is identified by a unique experiment identifier.
+The `logs` directory will hold (if `--enable-file-logging` is set and a valid directory is provided with `--log-dir`) **two** files per experiment, tracking (experiment-specific) performance measures, i.e., a JSON  (`.json`) file as well as an exact replica of the console output (the `.txt` file). Each file is identified by a unique integer-valued experiment identifier.
 
 ## Rotating MNIST
 
@@ -202,9 +202,7 @@ In [**Zeng23a**], we report an MSE of `8.02 +/- 0.10`.
 ## Human Activity Classification
 
 For the human activity recognition experiment, just run the `activity_classification.py` script with default
-arguments. **Note**: different to the manuscript, we do actually reconstruct the input here at the available 
-timepoints (and at the available coordinates). This is not necessary, but in that manner, all experiments are
-fully consistent in their setup.
+arguments. **Note**: different to the manuscript, we do reconstruct the input here at the available timepoints (and at all available coordinates). This is not necessary (as also pointed out by several prior works), but in that manner, all experiments are fully consistent in their setup.
 
 ```bash
 python activity_classification.py \
@@ -236,14 +234,11 @@ python activity_classification.py \
     --use-atanh
 ```
 
-
 Below are the results of **8** runs with different random seeds:
 
 |      Run     |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
 | -------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 |    Acc [%]   | 90.58 ± 0.48| 90.03 | 90.82 | 90.64 | 90.78 | 90.22 | 89.91 | 91.12 | 91.14 |
-
-
 
 In [**Zeng23a**], we report an accuracy of `90.7 +/- 0.3`.
 
@@ -284,7 +279,7 @@ python physionet_interpolation.py \
     --sample-tp 0.5 \
     --quantization 0.1
 ```
-Below are the results of **8** runs with different random seeds at `--sample-tp 0.5` which means that 50\% of timepoints at which there are actual measurements are taken as model input:
+Below are the results of **8** runs with different random seeds at `--sample-tp 0.5`, which means that 50\% of timepoints (at which there are actual measurements) are taken as model input:
 
 |          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
 | ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
@@ -294,8 +289,7 @@ At that sampling rate and quantization (6 minutes equals `--quantization 0.1`), 
 
 ## Irregular Sine (Toy) Experiment
 
-`irregular_sine_interpolation.py` implements a Latent SDE model for the *irregular sine* data from [torchsde](https://github.com/google-research/torchsde/).
-You can run the code with
+`irregular_sine_interpolation.py` implements a Latent SDE model for the *irregular sine* data from [torchsde](https://github.com/google-research/torchsde/). You can run the code with
 
 ```bash
 python irregular_sine_interpolation.py \
@@ -317,16 +311,16 @@ python irregular_sine_interpolation.py \
     --n-deg 6 \
     --no-learnable-prior  \
     --freeze-sigma  \
-    --mc-eval-samples 1 \
-    --mc-train-samples 1 \
+    --mc-eval-samples 10 \
+    --mc-train-samples 10 \
     --loglevel debug
 ```
 
-Note that the batch-size, by construction of that experiment, equals one; hence, the  `--n-epochs` corresponds to the number of update
-steps. The introductory figure for this README shows (in blue) the progression of several latent paths on the 2-sphere, (as `--z-dim 3`) 
+Note that there is not `--batch-size` argument, as the batch-size, by construction of that experiment, equals one; hence, running the experiments for, e.g., `--n-epochs 4500` corresponds to 3,990 update
+steps. The introductory figure for this README shows (in blue) the progression of several (500) latent paths on the 2-sphere, (as `--z-dim 3`) 
 across the time interval [0,1].
 
-# Notebooks
+# Notebooks / Tutorials 
 
-Several notebooks are available (in the `notebooks` subfolder) to analyze and visualize the results, aside from the command-line tracking of performance measures.
+Several notebooks are available (in the `notebooks` subfolder) to analyze and visualize the results, aside from the command-line tracking of performance measures. 
 

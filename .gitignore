@@ -1,6 +1,5 @@
 *.ipynb_checkpoints
 core/power_spherical
-logfile*
 Debug.ipynb
 *__pycache__*
 data_dir
