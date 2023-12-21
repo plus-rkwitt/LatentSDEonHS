@@ -4,10 +4,10 @@
   <img width="300" height="300" src="./assets/spherepaths.gif">
 </p>
 
-This repository contains the **reference implementation** of 
+This repository contains the **reference implementation** of
 
-Zeng, S. and Graf, F. and Kwitt, R.    
-**Latent SDEs on Homogeneous Spaces**    
+Zeng, S. and Graf, F. and Kwitt, R.
+**Latent SDEs on Homogeneous Spaces**
 *NeurIPS 2023*
 
 Please cite as:
@@ -19,8 +19,10 @@ Please cite as:
     booktitle = {NeurIPS},
     year      = {2023}}
 ```
-A preprint is available on [arXiv](https://arxiv.org/abs/2306.16248). In the following, we refer to the 
+A preprint is available on [arXiv](https://arxiv.org/abs/2306.16248). In the following, we refer to the
 paper as [**Zeng23a**].
+
+We attach the [poster](/assets/NeurIPS23_poster.pdf) and [presentation slides](/assets/NeurIPS23_slides.pdf) that were presented at NeurIPS 2023.
 
 # Overview
 
@@ -45,7 +47,7 @@ CUDA version is 12.1.
 cd /tmp/
 wget https://repo.anaconda.com/archive/Anaconda3-2023.09-0-Linux-x86_64.sh
 chmod +x Anaconda3-2023.09-0-Linux-x86_64.sh
-./Anaconda3-2023.09-0-Linux-x86_64.sh -p /tmp/anaconda3 
+./Anaconda3-2023.09-0-Linux-x86_64.sh -p /tmp/anaconda3
 source source /tmp/anaconda3/bin/activate
 conda create --name pytorch211 python=3.11
 conda activate pytorch211
@@ -65,7 +67,7 @@ mv ../power_spherical/power_spherical core/
 
 If you can run (within the activated `pytorch211` environment)
 ```bash
-python rotating_mnist.py --help 
+python rotating_mnist.py --help
 ```
 without any errors you are good to go.
 
@@ -75,9 +77,9 @@ This code has been mainly tested on an Ubuntu Linux 22.04 with an Nvidia GTX 309
 
 # Experiments
 
-The following sections list the settings we used to run the 
+The following sections list the settings we used to run the
 experiments from the manuscript. In the configurations listed
-below, experiments are run on the first GPU in your system 
+below, experiments are run on the first GPU in your system
 (`cuda:0`).
 
 The `logs` directory will hold (if `--enable-file-logging` is set and a valid directory is provided with `--log-dir`) **two** files per experiment, tracking (experiment-specific) performance measures, i.e., a JSON  (`.json`) file as well as an exact replica of the console output (the `.txt` file). Each file is identified by a unique integer-valued experiment identifier.
@@ -114,8 +116,8 @@ python rotating_mnist.py \
 
 Below are the results of **8** runs with different random seeds:
 
-|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   
-| -------------------- | ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
+|          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |
+| -------------------- | ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | MSE $\times 10^{-3}$ | 11.55 ± 0.28| 11.47 | 11.04 | 12.02 | 11.80 | 11.45 | 11.74 | 11.57 | 11.34 |
 
 In [**Zeng23a**], we report an MSE of `11.8 +/- 0.25`.
@@ -194,7 +196,7 @@ python pendulum_interpolation.py \
 Below are the results of **10** runs with different random seeds:
 
 |          Run         |     Mean    |   1   |   2   |   3   |   4   |   5   |   6   |   7   |   8   |   9   |   10  |
-| ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | 
+| ---------------------| ----------- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | MSE $\times 10^{-3}$ | 8.15 ± 0.06 | 8.13  | 8.09  | 8.16  | 8.06  | 8.18  | 8.14  | 8.20  | 8.13  | 8.17  | 8.11  |
 
 In [**Zeng23a**], we report an MSE of `8.02 +/- 0.10`.
@@ -317,10 +319,10 @@ python irregular_sine_interpolation.py \
 ```
 
 Note that there is not `--batch-size` argument, as the batch-size, by construction of that experiment, equals one; hence, running the experiments for, e.g., `--n-epochs 4500` corresponds to 3,990 update
-steps. The introductory figure for this README shows (in blue) the progression of several (500) latent paths on the 2-sphere, (as `--z-dim 3`) 
+steps. The introductory figure for this README shows (in blue) the progression of several (500) latent paths on the 2-sphere, (as `--z-dim 3`)
 across the time interval [0,1].
 
-# Notebooks / Tutorials 
+# Notebooks / Tutorials
 
-Several notebooks are available (in the `notebooks` subfolder) to analyze and visualize the results, aside from the command-line tracking of performance measures. 
+Several notebooks are available (in the `notebooks` subfolder) to analyze and visualize the results, aside from the command-line tracking of performance measures.
 
