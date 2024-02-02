@@ -255,7 +255,6 @@ class MTANEncoder(EncMtanRnn):
     Args:
         input_dim (int): _description_
         query (Tensor): _description_
-        latent_dim (int, optional): _description_. Defaults to 2.
         nhidden (int, optional): _description_. Defaults to 16.
         embed_time (int, optional): _description_. Defaults to 16.
         num_heads (int, optional): _description_. Defaults to 1.
@@ -266,7 +265,6 @@ class MTANEncoder(EncMtanRnn):
         self,
         input_dim: int,
         query: Tensor,
-        latent_dim: int = 2,
         nhidden: int = 16,
         embed_time: int = 16,
         num_heads: int = 1,
@@ -275,15 +273,13 @@ class MTANEncoder(EncMtanRnn):
         super().__init__(
             input_dim,
             query,
-            latent_dim,
-            nhidden,
-            embed_time,
-            num_heads,
-            learn_emb
+            nhidden=nhidden,
+            embed_time=embed_time,
+            num_heads=num_heads,
+            learn_emb=learn_emb
         )
         self.input_dim = input_dim
         self.query = query
-        self.latent_dim = latent_dim
         self.nhidden = nhidden
         self.embed_time = embed_time
         self.num_heads = num_heads
@@ -293,8 +289,9 @@ class MTANEncoder(EncMtanRnn):
 
     def __repr__(self) -> str:
         return (
-            f"MTANEncoder(input_dim={self.input_dim}, query={self.query}, "
-            f"latent_dim={self.latent_dim}, nhidden={self.nhidden}, "
+            f"MTANEncoder(input_dim={self.input_dim}, " 
+            f"query=Tensor: {self.query.shape}, "
+            f"nhidden={self.nhidden}, "
             f"embed_time={self.embed_time}, num_heads={self.num_heads}, "
             f"learn_emb={self.learn_emb})"
         )
