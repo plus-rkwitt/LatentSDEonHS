@@ -1,0 +1,8 @@
+# Logfiles of all experiments are saved in this directory by default.
+# Per experiment, two files are generated.
+# 1. A JSON (.json) file tracking (experiment-specific) performance measures
+#    and command line arguments
+# 2. A text (.txt) file with an  exact replica of the console output.
+
+*
+
